@@ -12,9 +12,12 @@ const execute = async (searchBuilder) => {
 	
 	const {_pagesAmount, _perPage, _sortBy, _order, _queryParams} = searchBuilder
 
+	let topic = ""
+
 	const searchQuery = _queryParams.map(({type, value}) => {
 		switch (type) {
-			case 'topic': 
+			case 'topic':
+				topic = value 
 				return `topic:${value}`
 			case 'language': 
 				return `language:${value}` 
@@ -65,7 +68,11 @@ const execute = async (searchBuilder) => {
 		items.push(pageItems)
 	}
 
-	return items.flat()
+	const flattedItems = items.flat()
+
+	flattedItems.forEach(item => Object.assign(item, {topic}))
+
+	return flattedItems
 
 	// return await Promise.all(promises).then(items => items.flat().map(filterItem))
 }
